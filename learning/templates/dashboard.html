@@ -1,0 +1,70 @@
+{% extends "mainbt.html" %}
+{% load static %}
+{% block content %}
+
+<div class="container mt-4">
+    <h2>Welcome, {{ user.username }}</h2>
+
+    {% if student.profile_pic %}
+        <img src="{{ student.profile_pic.url }}" alt="Profile Picture" class="img-thumbnail" style="width: 150px; height: 150px;">
+    {% endif %}
+
+    <h4>Personal Information</h4>
+<ul>
+    <li><strong>Roll:</strong> {{ student.roll }}</li>
+    <li><strong>Branch:</strong> {{ student.branch }}</li>
+    <li><strong>Email:</strong> {{ student.email }}</li>
+    <li><strong>Date of Birth:</strong> {{ student.dob }}</li>
+    <li><strong>Phone:</strong> {{ student.phone }}</li>
+    <li><strong>Address:</strong> {{ student.address }}</li>
+</ul>
+
+
+   <h4>Attendance Summary</h4>
+    <div id="attendance_chart" style="width: 400px; height: 300px;"></div>
+
+    <!-- Google Chart Script -->
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <script type="text/javascript">
+      google.charts.load("current", {packages:["corechart"]});
+      google.charts.setOnLoadCallback(drawChart);
+      function drawChart() {
+        var data = google.visualization.arrayToDataTable([
+          ['Status', 'Count'],
+          ['Present', {{ present }}],
+          ['Absent', {{ absent }}]
+        ]);
+
+        var options = {
+          title: 'Attendance',
+          pieHole: 0.4,
+          colors: ['#4CAF50', '#F44336']
+        };
+
+        var chart = new google.visualization.PieChart(document.getElementById('attendance_chart'));
+        chart.draw(data, options);
+      }
+     </script>
+
+    <h4 class="mt-5">📊 Marks</h4>
+    <table class="table table-bordered mt-3">/
+        <thead class="table-dark">
+            <tr>
+                <th>Subject</th>
+                <th>Marks Obtained</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for mark in marks %}
+                <tr>
+                    <td>{{ mark.subject }}</td>
+                    <td>{{ mark.marks_obtained }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+
+
+{% endblock %}
